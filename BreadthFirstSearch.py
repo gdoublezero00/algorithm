@@ -13,7 +13,9 @@ adjacent = (
 )
 GOAL = [1,2,3,4,5,6,7,8,0,]
 
-SIZE = 181440
+# for size check
+global Count
+global QueueSize
 
 class State:
 	def __init__(self, board, space, prev):
@@ -22,7 +24,9 @@ class State:
 		self.prev = prev
 	
 def bf_search(start):
-	q = Queue.Queue(SIZE)
+	global Count
+	global QueueSize
+	q = Queue.Queue()
 	q.put(State(start, start.index(0), None))
 	table = {}
 	table[tuple(start)] = True
@@ -33,6 +37,12 @@ def bf_search(start):
 			b[a.space] = b[x]
 			b[x] = 0
 			key = tuple(b)
+			
+			# for size check
+			Count+=1
+			if QueueSize < q.qsize():
+				QueueSize = q.qsize()
+
 			if key in table: continue
 			c = State(b, x, a)
 			if b == GOAL:
@@ -47,5 +57,10 @@ def print_answer(x):
 		print x.board
 
 if __name__ == '__main__':
+	Count = 0
+	QueueSize = 0
 	bf_search([8,6,7,2,5,4,3,0,1,])
+	#bf_search([1,2,3,4,5,6,0,8,7,])
+	print Count
+	print QueueSize
 
